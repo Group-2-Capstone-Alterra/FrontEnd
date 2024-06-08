@@ -7,6 +7,9 @@ import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { getDetailDoctor } from "@/utils/apis/detail-doctor/api";
+import { DetailsDoctor } from "@/utils/apis/detail-doctor/types";
+import { useEffect, useState } from "react";
 
 const FormSchema = z.object({
   day: z.enum(["Senin", "Selasa", "Rabu", "Kamis", "Jum'at", "Sabtu", "Minggu"], {
@@ -18,9 +21,27 @@ const FormSchema = z.object({
 });
 
 const DetailDoctor = () => {
+  const [detailDoctor, setDetailDoctor] = useState <DetailsDoctor | null>(null);
+  
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
   });
+
+  useEffect(() => {
+    const fetchDetailDoctor = async () => {
+      try {
+        const data = await getDetailDoctor();
+        setDetailDoctor(data);
+      } catch (error) {
+        console.error('Failed to fetch doctor details', error);
+      }
+    };
+    fetchDetailDoctor();
+  }, []);
+
+  if (!detailDoctor){
+    return <div>No data...</div>
+  }
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
     console.log(data);
@@ -34,22 +55,21 @@ const DetailDoctor = () => {
             <img src="https://source.unsplash.com/random?doctor" alt="doctor" className="w-full h-full object-cover rounded-md" />
           </div>
           <div className="md:w-[65%] lg:w-[75%]">
-            <h1 className="text-2xl font-semibold mb-3">Drh. John Doe</h1>
+            <h1 className="text-2xl font-semibold mb-3">{detailDoctor.name}</h1>
             <div className="grid grid-cols-2 gap-x-3 w-full sm:w-1/2">
               <div className="border-r border-r-slate-400">
                 <h1 className="text-[#777676]">Price</h1>
-                <h1 className="text-[#777676]">Rp. 100.000</h1>
+                <h1 className="text-[#777676]">Rp. {detailDoctor.price.toLocaleString()}</h1>
               </div>
               <div>
                 <h1 className="text-[#777676]">Location</h1>
-                <h1 className="text-[#777676]">Bandung, West Java</h1>
+                <h1 className="text-[#777676]">{detailDoctor.location}</h1>
               </div>
             </div>
             <div className="my-10">
               <h1 className="text-2xl font-semibold">About</h1>
               <p className="text-[#777676] lg:w-4/5 text-justify">
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Dicta tempora facilis necessitatibus neque, nostrum sequi aliquid iste harum accusamus itaque perferendis autem ea optio dignissimos tenetur? Officiis aliquid dolorum
-                molestias.
+              {detailDoctor.about}
               </p>
             </div>
             <div>
@@ -63,48 +83,14 @@ const DetailDoctor = () => {
                       <FormItem className="space-y-3">
                         <FormControl>
                           <RadioGroup onValueChange={field.onChange} defaultValue={field.value} className="flex flex-col space-y-1 mb-5">
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Senin" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Senin</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="selasa" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Selasa</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Rabu" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Rabu</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Kamis" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Kamis</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Jum'at" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Jum'at</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Sabtu" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Sabtu</FormLabel>
-                            </FormItem>
-                            <FormItem className="flex items-center space-x-3 space-y-0">
-                              <FormControl>
-                                <RadioGroupItem value="Minggu" />
-                              </FormControl>
-                              <FormLabel className="font-normal">Minggu</FormLabel>
-                            </FormItem>
+                          {detailDoctor.availableDays.map((day) => (
+                              <FormItem key={day} className="flex items-center space-x-3 space-y-0">
+                                <FormControl>
+                                  <RadioGroupItem value={day} />
+                                </FormControl>
+                                <FormLabel className="font-normal">{day}</FormLabel>
+                              </FormItem>
+                            ))}
                           </RadioGroup>
                         </FormControl>
                         <FormMessage />
@@ -123,8 +109,11 @@ const DetailDoctor = () => {
                             </SelectTrigger>
                           </FormControl>
                           <SelectContent>
-                            <SelectItem value="medical-checkup">Medical Checkup</SelectItem>
-                            <SelectItem value="konsultasi-online">Konsultasi Online</SelectItem>
+                          {detailDoctor.service.map((service) => (
+                              <SelectItem key={service} value={service}>
+                                {service}
+                              </SelectItem>
+                            ))}
                           </SelectContent>
                         </Select>
                         <FormMessage />
