@@ -59,7 +59,7 @@ const DetailDoctor = () => {
             <div className="grid grid-cols-2 gap-x-3 w-full sm:w-1/2">
               <div className="border-r border-r-slate-400">
                 <h1 className="text-[#777676]">Price</h1>
-                <h1 className="text-[#777676]">Rp. {detailDoctor.price.toLocaleString()}</h1>
+                <h1 className="text-[#777676]">Rp. {detailDoctor.price}</h1>
               </div>
               <div>
                 <h1 className="text-[#777676]">Location</h1>
