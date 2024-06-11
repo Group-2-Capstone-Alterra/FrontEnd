@@ -40,6 +40,7 @@ const Consultation = () => {
                   <TableHead className="w-[100px]">No</TableHead>
                   <TableHead>Doctor</TableHead>
                   <TableHead>Service</TableHead>
+                  <TableHead>Schedule</TableHead>
                   <TableHead>Status</TableHead>
                 </TableRow>
               </TableHeader>
@@ -50,6 +51,7 @@ const Consultation = () => {
                       <TableCell className="font-medium">{no++}</TableCell>
                       <TableCell>{data.doctor_details.full_name}</TableCell>
                       <TableCell>{data.service}</TableCell>
+                      <TableCell>{data.scheduled_date}</TableCell>
                       <TableCell>{data.consultation_status}</TableCell>
                     </TableRow>
                   );

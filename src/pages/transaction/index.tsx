@@ -20,8 +20,6 @@ const Payment: FC = () => {
   const [bank, setBank] = useState<string>("");
   const [payment, setPayment] = useState<Partial<PaymentType>>({});
 
-  // console.log(transactionData);
-
   useEffect(() => {
     getOrderData(id);
   }, []);
@@ -55,7 +53,8 @@ const Payment: FC = () => {
           axiosWithConfig
             .post("https://zyannstore.my.id/payments", pembayaran)
             .then((response) => {
-              setPayment(response.data.data);
+              console.log(response);
+              setPayment(response.data.data.payment);
               Swal.fire({
                 position: "center",
                 icon: "success",
@@ -112,12 +111,20 @@ const Payment: FC = () => {
             </SelectContent>
           </Select>
           <div className="mt-4">
+            <span className="text-sm font-bold">Product name : </span>
+            <span className="font-bold text-lg">{transactionData.product_name}</span>
+          </div>
+          <div className="mt-4">
+            <span className="text-sm font-bold">Qty : </span>
+            <span className="font-bold text-lg">{transactionData.quantity}</span>
+          </div>
+          <div className="mt-4">
             <span className="text-sm font-bold">Total : </span>
-            <span className="font-bold text-lg text-red-500">
+            <span className="font-bold text-lg">
               <NumberFormatter value={transactionData.price} />
             </span>
           </div>
-          {transactionData.payment?.invoice_id || payment?.invoice_id ? (
+          {transactionData.payment?.id || payment?.id ? (
             <Button type="button" onClick={() => setShowPopup(true)} className="flex justify-center items-center mt-10 font-semibold bg-sky-600 w-full text-white py-2.5 rounded-md">
               Open VA Number
             </Button>
@@ -138,7 +145,9 @@ const Payment: FC = () => {
           <hr />
           <div className="my-2 text-sm">Alamat: {user.address}</div>
           <hr />
-          <div className="my-2 text-sm">Metode Pembayaran: {payment.payment_status ? payment?.payment_status?.toUpperCase() : transactionData.payment?.payment_status?.toUpperCase()}</div>
+          <div className="my-2 text-sm">Metode Pembayaran: {payment.payment_method ? payment?.payment_method?.toUpperCase() : transactionData.payment?.payment_method?.toUpperCase()}</div>
+          <hr />
+          <div className="my-2 text-sm">Status: {transactionData.status}</div>
           <hr />
           <div className="my-2 text-sm font-semibold">
             Total Pembayaran:{" "}

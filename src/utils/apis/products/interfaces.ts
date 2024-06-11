@@ -42,10 +42,8 @@ export interface Transaction {
   id: number;
   payment: {
     id: number;
-    invoice_id: string;
     order_id: number;
     payment_method: string;
-    payment_status: string;
     signature_id: string;
     va_number: string;
   };
@@ -60,10 +58,8 @@ export interface Transaction {
 
 export interface PaymentType {
   id: number;
-  invoice_id: string;
   order_id: number;
   payment_method: string;
-  payment_status: string;
   signature_id: string;
   va_number: string;
 }
