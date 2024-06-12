@@ -23,13 +23,13 @@ PetPal App is a specialized platform for pet needs. This application provides va
 - Login Account
 - Sell Product
 - Medical Check-up Services
--
+- Chatting with User (Online Consultation)
 
 ### 👥 User
 
 - Create Account
 - Login Account
--
+- Chatting with Veterinary (Online Consultation)
 - Simulation Payment with Midtrans
 - Edit Profile
 - Buy Animal Product and Medical Check-up Services
